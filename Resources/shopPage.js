@@ -1,10 +1,50 @@
 exports.createPage = function (data) {
     var tabGroup = Ti.UI.createTabGroup();
-    var shopPageWin = Ti.UI.createWindow();
 
+    // for feed tab
+    var shopFeedWin = Ti.UI.createWindow();
+    var shopFeedTab = Ti.UI.createTab({
+	window: shopFeedWin,
+	title: "Now"
+    });
+
+    var shopFeed = Ti.UI.createTableView();
+
+    for (var i = 0; i < data.feeds.length; i++) {
+	var row = Ti.UI.createTableViewRow();
+	row.hight = 500;
+	row.add(Ti.UI.createLabel({
+	    text: data.feeds[i].username,
+	    top: 256,
+	    left: 64,
+	    backgroundColor: 'green',
+	    height: 16
+	}));
+	row.add(Ti.UI.createLabel({
+	    text: data.feeds[i].text,
+	    top: 300,
+	    left: 64,
+	    backgroundColor: 'red',
+	    height: 'auto'
+	}));
+	row.add(Ti.UI.createImageView({
+	    top: 8,
+	    left: 40,
+	    width: 240,
+	    height: 240,
+	    backgroundColor: 'blue',
+	    image: data.picture
+	}));
+	shopFeed.appendRow(row);
+    }
+
+    shopFeedWin.add(shopFeed);
+
+    // for info tab
+    var shopPageWin = Ti.UI.createWindow();
     var shopPageTab = Ti.UI.createTab({
 	window: shopPageWin,
-	title: "Shop Page"
+	title: "Info"
     });
 
     var shopDetail = Ti.UI.createView({
@@ -41,10 +81,6 @@ exports.createPage = function (data) {
     shopDetail.add(shopName);
     shopDetail.add(contact);
 
-    var shopFeed = Ti.UI.createTableView({
-	top: 150
-    });
-
     var backButton = Ti.UI.createButton({
 	title: 'Back'
     });
@@ -55,36 +91,9 @@ exports.createPage = function (data) {
 
     shopPageWin.leftNavButton = backButton;
 
-    for (var i = 0; i < data.feeds.length; i++) {
-	var row = Ti.UI.createTableViewRow();
-	row.hight = 120;
-	row.add(Ti.UI.createLabel({
-	    text: data.feeds[i].username,
-	    top: 8,
-	    left: 64,
-	    backgroundColor: 'green',
-	    height: 16
-	}));
-	row.add(Ti.UI.createLabel({
-	    text: data.feeds[i].text,
-	    top: 32,
-	    left: 64,
-	    backgroundColor: 'red',
-	    height: 'auto'
-	}));
-	row.add(Ti.UI.createImageView({
-	    top: 8,
-	    left: 8,
-	    width: 48,
-	    height: 48,
-	    backgroundColor: 'blue',
-	    image: data.picture
-	}));
-	shopFeed.appendRow(row);
-    }
 
     shopPageWin.add(shopDetail);
-    shopPageWin.add(shopFeed);
+//     shopPageWin.add(shopFeed);
 
     // for Map tab
     var mapPageWin = Ti.UI.createWindow();
@@ -93,11 +102,8 @@ exports.createPage = function (data) {
     	title: 'map',
     	window: mapPageWin
     });
-    
-    var latitude = 35.71006098178059,
-    	longitude = 139.81071964110447;
 
-    var pin = Ti.Map.createAnnotation({
+    var shopPin = Ti.Map.createAnnotation({
     	latitude: data.latitude,
     	longitude: data.longitude,
     	subtitle: 'sub title',
@@ -115,16 +121,15 @@ exports.createPage = function (data) {
     	animate: true,
     	regionFit: true,
     	userLocation: false,
-    	annotations: [pin]
+    	annotations: [shopPin]
     });
 
     mapPageWin.add(mapView);
     mapPageWin.leftNavButton = backButton;
 
+    tabGroup.addTab(shopFeedTab);
     tabGroup.addTab(shopPageTab);
     tabGroup.addTab(mapPageTab);
 
     return tabGroup;
 };
-
-// exports = tabGroup;
