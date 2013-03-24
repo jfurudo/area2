@@ -8,7 +8,9 @@ exports.createPage = function (data) {
 	title: "Now"
     });
 
-    var shopFeed = Ti.UI.createTableView();
+    var shopFeed = Ti.UI.createTableView({
+	allowsSelection: false
+    });
 
     for (var i = 0; i < data.feeds.length; i++) {
 	var row = Ti.UI.createTableViewRow();
@@ -41,31 +43,33 @@ exports.createPage = function (data) {
     shopFeedWin.add(shopFeed);
 
     // for info tab
-    var shopPageWin = Ti.UI.createWindow();
+    var shopPageWin = Ti.UI.createWindow({backgroundColor: 'white'});
     var shopPageTab = Ti.UI.createTab({
 	window: shopPageWin,
 	title: "Info"
     });
-
-    var shopDetail = Ti.UI.createView({
-	backgroundColor: 'blue'
-    });
+    var shopInfoView = Ti.UI.createScrollView(); // tableView のほうがいいかも
 
     var shopPic = Ti.UI.createImageView({
-	left: 10,
-	top: 10,
-	width: 80,
-	height: 80,
+	left: 40,
+	top: 40,
+	width: 240,
+	height: 240,
 	image: data.picture,
 	backgroundColor: 'white'
     });
 
-    var shopName = Ti.UI.createLabel({
+    var shopDetail = Ti.UI.createView({
+	top: 280
+    });
+
+    var shopAbout = Ti.UI.createLabel({
 	top: 10,
-	left: 140,
-	height: 20,
-	text: data.name,
-	font: {fontSize: 24}
+	left: 40,
+// 	height: 20,
+	text: "This is free space for each shop. So here needs sufficient space.",
+	font: {fontSize: 16},
+	backgroundColor: 'blue'
     });
 
     var contact = Ti.UI.createLabel({
@@ -77,8 +81,7 @@ exports.createPage = function (data) {
 
     Ti.API.info("URL: " + data.url + "\nTEL: " + data.tel + "\nEmail: " + data.mail);
 
-    shopDetail.add(shopPic);
-    shopDetail.add(shopName);
+    shopDetail.add(shopAbout);
     shopDetail.add(contact);
 
     var backButton = Ti.UI.createButton({
@@ -91,9 +94,10 @@ exports.createPage = function (data) {
 
     shopPageWin.leftNavButton = backButton;
 
+    shopInfoView.add(shopPic);
+    shopInfoView.add(shopDetail);
 
-    shopPageWin.add(shopDetail);
-//     shopPageWin.add(shopFeed);
+    shopPageWin.add(shopInfoView);
 
     // for Map tab
     var mapPageWin = Ti.UI.createWindow();
